@@ -3,7 +3,7 @@
 ## CART Trees and Random Forests - Jean‐Michel POGGI  
 ### Master 2 Course in Statistics  
 ### Universidad de la República – Facultad de Ingeniería, Montevideo, Uruguay
-### February 2018 
+### February 2018
 
 #### Guide for the practice sessions with the companion scenario, the documentation [cran.r-project.org/web/packages/VSURF/index.html](cran.r-project.org/web/packages/VSURF/index.html) and the two articles: [journal.r-project.org/archive/2015-2/genuer-poggi-tuleaumalot.pdf](journal.r-project.org/archive/2015-2/genuer-poggi-tuleaumalot.pdf) [hal-descartes.archives-ouvertes.fr/hal-01387654v2](hal-descartes.archives-ouvertes.fr/hal-01387654v2)
 
@@ -111,7 +111,7 @@ str(spam)
      $ type             : Factor w/ 2 levels "nonspam","spam": 2 2 2 2 2 2 2 2 2 2 ...
 
 
-> To continue exploring the **spam** dataset, the **tidyverse** and the **ggridges** libraries will be loaded into the `R` environment. They will be used to manipulate and visualize data. 
+> To continue exploring the **spam** dataset, the **tidyverse** and the **ggridges** libraries will be loaded into the `R` environment. They will be used to manipulate and visualize data.
 
 
 ```R
@@ -155,18 +155,18 @@ blue <- "#53A8BD"
 ```R
 # Create function
 boxplotOfSpamVars <- function(vars) {
-    
-    # Reshape the spam data to make a boxplot 
-    spam.gather <- spam %>% 
-                        select(c("type", vars)) %>% 
+
+    # Reshape the spam data to make a boxplot
+    spam.gather <- spam %>%
+                        select(c("type", vars)) %>%
                             gather(key = "var", value = "values", -type)
 
     # Create a boxplot of every variable separeted by the variable type (spam and nonspam)
-    spam.boxplot <- ggplot() + 
-    geom_boxplot(data = spam.gather, aes(x = var, y = values, color = type), 
-                 lwd = 0.25, alpha = 0.5) + 
+    spam.boxplot <- ggplot() +
+    geom_boxplot(data = spam.gather, aes(x = var, y = values, color = type),
+                 lwd = 0.25, alpha = 0.5) +
     scale_color_manual(values = c(green, red), name = "type")
-    
+
     # Create faceting
     spam.boxplot + facet_grid(var ~ ., scales = "free")
 }
@@ -182,10 +182,10 @@ boxplotOfSpamVars(vars = c("charExclamation", "remove", "capitalTotal"))
 
 
 
-![png](output_21_1.png)
+![png](markdown_export/output_21_1.png)
 
 
-> It seems that the character exclamation symbol (*charExclamation*), the total number of capital letters (*capitalTotal*) and the presence of the word *remove* are more frequent in *spam* mails than in *nonspam* mails. 
+> It seems that the character exclamation symbol (*charExclamation*), the total number of capital letters (*capitalTotal*) and the presence of the word *remove* are more frequent in *spam* mails than in *nonspam* mails.
 
 - **Create density plots of standarized variables to compare their distributions. 1) Center variables by subtracting their means (omitting NAs). 2) Divide the centered variables by their standard deviations**
 
@@ -198,8 +198,8 @@ spam.norm$type <- spam$type
 
 
 ```R
-# Manipulate the standarized spam.norm data to allow making a density plot of all the variables 
-spam.norm.gather <- spam.norm %>% 
+# Manipulate the standarized spam.norm data to allow making a density plot of all the variables
+spam.norm.gather <- spam.norm %>%
                         gather(key = "var", value = "values", -type) %>%  # reshape
                             group_by(var, type)  # group by columns 'var' and 'type'
 
@@ -227,7 +227,7 @@ head(spam.norm.gather)
 # Create a ggplot of standarized variables densities
 ggplot(spam.norm.gather) +
 geom_density_ridges(aes(x = values,
-                        y = factor(as.character(spam.norm.gather$var), 
+                        y = factor(as.character(spam.norm.gather$var),
                                    levels = rev(unique(as.character(spam.norm.gather$var)))),
                         fill = type), alpha = 0.6, lwd = 0.05, scale = 3) +
 scale_y_discrete(name = "predictor variable", expand = c(0.06, 0)) +
@@ -242,7 +242,7 @@ scale_fill_manual(values = c(green, red), name = "type")
 
 
 
-![png](output_26_2.png)
+![png](markdown_export/output_26_2.png)
 
 
 > Looking at the above figure, it seems that the variables *capitalAve*, *capitalLong* and *capitalTotal* have markedly different peaks for *spam* and *nonspam* distributions.
@@ -301,12 +301,12 @@ library("rpart.plot")
 
 ```R
 # Plot tree
-rpart.plot(fit.train.def, main = "Default rpart tree", 
+rpart.plot(fit.train.def, main = "Default rpart tree",
            box.palette = rev(c(red, orange, green, purple, blue)), type = 2)
 ```
 
 
-![png](output_39_0.png)
+![png](markdown_export/output_39_0.png)
 
 
 Each node of the binary model tree shows:
@@ -318,11 +318,11 @@ Each node of the binary model tree shows:
 
 ```R
 # Depth of tree
-cat("The depth of the default tree is:", 
+cat("The depth of the default tree is:",
     max(rpart:::tree.depth(as.numeric(rownames(fit.train.def$frame)))), "\n")
 
 # Number of leaves
-cat("The number of leaves is:", 
+cat("The number of leaves is:",
     sum(fit.train.def$frame$var == "<leaf>"), "\n")
 
 # Variables involved in splits
@@ -331,9 +331,9 @@ purrr::map(unique(fit.train.def$frame$var[which(fit.train.def$frame$var != "<lea
            ~ paste(as.character(.x)))
 ```
 
-    The depth of the default tree is: 5 
-    The number of leaves is: 7 
-    The splits involved the following variables: 
+    The depth of the default tree is: 5
+    The number of leaves is: 7
+    The splits involved the following variables:
 
 
 
@@ -358,24 +358,24 @@ purrr::map(unique(fit.train.def$frame$var[which(fit.train.def$frame$var != "<lea
 
 ```R
 # Build tree
-fit.train.d1 <- rpart(type ~ ., data = train, control = rpart.control(maxdepth = 1), 
+fit.train.d1 <- rpart(type ~ ., data = train, control = rpart.control(maxdepth = 1),
                       method = 'class')
 ```
 
 
 ```R
 # Plot tree
-rpart.plot(fit.train.d1, main = "Tree of depth equal to 1", 
+rpart.plot(fit.train.d1, main = "Tree of depth equal to 1",
            box.palette = rev(c(red, orange, green, purple, blue)), type = 2)
 ```
 
 
-![png](output_45_0.png)
+![png](markdown_export/output_45_0.png)
 
 
 > The tree of depth equal to 1 has 2 leaves and the split involved 1 variable: *charDollar*. Many dollar sign characters present in an e-mail means that is probably (*p = 0.89*) a spam e-mail.
 
-> The tree was constructed using some default `rpart` settings: following the Gini index of heterogeneity for growing the trees, 10 fold cross-validation pruning and `'class'` `method` since `type` (response variable) is categorical but limiting the `maxdepth` to 1. 
+> The tree was constructed using some default `rpart` settings: following the Gini index of heterogeneity for growing the trees, 10 fold cross-validation pruning and `'class'` `method` since `type` (response variable) is categorical but limiting the `maxdepth` to 1.
 
 ### 2.4. Examine splits: primary splits and surrogate splits
 
@@ -389,20 +389,20 @@ summary(fit.train.d1)
 
     Call:
     rpart(formula = type ~ ., data = train, method = "class", control = rpart.control(maxdepth = 1))
-      n= 3221 
-    
+      n= 3221
+
              CP nsplit rel error    xerror       xstd
     1 0.4913928      0 1.0000000 1.0000000 0.02172579
     2 0.0100000      1 0.5086072 0.5610329 0.01847356
-    
+
     Variable importance
-     charDollar      num000       money capitalLong      credit       order 
-             46          16          16           8           8           7 
-    
+     charDollar      num000       money capitalLong      credit       order
+             46          16          16           8           8           7
+
     Node number 1: 3221 observations,    complexity param=0.4913928
       predicted class=nonspam  expected loss=0.3967712  P(node) =1
         class counts:  1943  1278
-       probabilities: 0.603 0.397 
+       probabilities: 0.603 0.397
       left son=2 (2417 obs) right son=3 (804 obs)
       Primary splits:
           charDollar      < 0.0555 to the left,  improve=522.4686, (0 missing)
@@ -416,17 +416,17 @@ summary(fit.train.d1)
           capitalLong < 72.5   to the left,  agree=0.794, adj=0.177, (0 split)
           credit      < 0.025  to the left,  agree=0.791, adj=0.164, (0 split)
           order       < 0.045  to the left,  agree=0.790, adj=0.159, (0 split)
-    
+
     Node number 2: 2417 observations
       predicted class=nonspam  expected loss=0.2325197  P(node) =0.7503881
         class counts:  1855   562
-       probabilities: 0.767 0.233 
-    
+       probabilities: 0.767 0.233
+
     Node number 3: 804 observations
       predicted class=spam     expected loss=0.1094527  P(node) =0.2496119
         class counts:    88   716
-       probabilities: 0.109 0.891 
-    
+       probabilities: 0.109 0.891
+
 
 
 > The **primary splits** for the node number 1 are: *charDollar*, *charExclamation*, *remove*, *your* and *free* and the **surrogate splits** are: *num000*, *money*, *capitalLong*, *credit* and *order*. There aren't missing data in the primary splits so the surrogate splits weren't used and they don't have any split. There are five primary splits and five surrogate splits retained because those are the default values for `rpart` (*maxsurrogate = 5* and *usesurrogate = 2*).
@@ -437,19 +437,19 @@ summary(fit.train.d1)
 ```R
 # Practical example
 
-# Modify train data adding NA values to the first primary split variable (charDollar) 
+# Modify train data adding NA values to the first primary split variable (charDollar)
 # and the first surrogate split variable (num000)
 train2 <- train
 
 # Add 10 NAs in a random cell position to charDollar variable
 train2$charDollar[sample(1:nrow(train), size = 10)] <- NA
 
-# Add 5 NAs in a random cell position to num000 variable but 
+# Add 5 NAs in a random cell position to num000 variable but
 # for the 10 possible cells where charDollar is also NA
 train2$num000[sample(which(is.na(train2$charDollar)), size = 5)] <- NA
 
 # Build tree
-fit.train.d2 <- rpart(type ~ ., data = train2, 
+fit.train.d2 <- rpart(type ~ ., data = train2,
                       control = rpart.control(maxdepth = 1))
 
 # Get summary of the rpart model tree
@@ -461,20 +461,20 @@ rm(train2); rm(fit.train.d2)
 
     Call:
     rpart(formula = type ~ ., data = train2, control = rpart.control(maxdepth = 1))
-      n= 3221 
-    
+      n= 3221
+
              CP nsplit rel error    xerror       xstd
     1 0.4921753      0 1.0000000 1.0000000 0.02172579
     2 0.0100000      1 0.5078247 0.5242567 0.01802463
-    
+
     Variable importance
-     charDollar      num000       money capitalLong      credit       order 
-             46          16          16           8           8           7 
-    
+     charDollar      num000       money capitalLong      credit       order
+             46          16          16           8           8           7
+
     Node number 1: 3221 observations,    complexity param=0.4921753
       predicted class=nonspam  expected loss=0.3967712  P(node) =1
         class counts:  1943  1278
-       probabilities: 0.603 0.397 
+       probabilities: 0.603 0.397
       left son=2 (2418 obs) right son=3 (803 obs)
       Primary splits:
           charDollar      < 0.0555 to the left,  improve=522.6973, (10 missing)
@@ -488,17 +488,17 @@ rm(train2); rm(fit.train.d2)
           capitalLong < 72.5   to the left,  agree=0.794, adj=0.176, (0 split)
           credit      < 0.025  to the left,  agree=0.791, adj=0.165, (0 split)
           order       < 0.045  to the left,  agree=0.790, adj=0.160, (0 split)
-    
+
     Node number 2: 2418 observations
       predicted class=nonspam  expected loss=0.2324235  P(node) =0.7506985
         class counts:  1856   562
-       probabilities: 0.768 0.232 
-    
+       probabilities: 0.768 0.232
+
     Node number 3: 803 observations
       predicted class=spam     expected loss=0.1083437  P(node) =0.2493015
         class counts:    87   716
-       probabilities: 0.108 0.892 
-    
+       probabilities: 0.108 0.892
+
 
 
 ### 2.5. Build a maximal tree and draw it
@@ -506,14 +506,14 @@ rm(train2); rm(fit.train.d2)
 
 ```R
 # Build tree
-fit.train.max <- rpart(type ~ ., data = train, 
+fit.train.max <- rpart(type ~ ., data = train,
                        control = rpart.control(cp = 0, minsplit = 1), method = 'class')
 ```
 
 
 ```R
 # Plot tree
-rpart.plot(fit.train.max, main = "Maximal tree", 
+rpart.plot(fit.train.max, main = "Maximal tree",
            box.palette = rev(c(red, orange, green, purple, blue)), type = 2)
 ```
 
@@ -521,17 +521,17 @@ rpart.plot(fit.train.max, main = "Maximal tree",
     “labs do not fit even at cex 0.15, there may be some overplotting”
 
 
-![png](output_55_1.png)
+![png](markdown_export/output_55_1.png)
 
 
 
 ```R
 # Depth of tree
-cat("The depth of the maximal tree is:", 
+cat("The depth of the maximal tree is:",
     max(rpart:::tree.depth(as.numeric(rownames(fit.train.max$frame)))), "\n")
 
 # Number of leaves
-cat("The number of leaves is:", 
+cat("The number of leaves is:",
     sum(fit.train.max$frame$var == "<leaf>"), "\n")
 
 # Variables involved in splits
@@ -540,9 +540,9 @@ purrr::map(unique(fit.train.max$frame$var[which(fit.train.max$frame$var != "<lea
            ~ paste(as.character(.x)))
 ```
 
-    The depth of the maximal tree is: 29 
-    The number of leaves is: 212 
-    The splits involved the following variables: 
+    The depth of the maximal tree is: 29
+    The number of leaves is: 212
+    The splits involved the following variables:
 
 
 
@@ -610,7 +610,7 @@ plotcp(fit.train.max, minline = TRUE, lty = 3, col = purple, lwd = 0.5, pch = 19
 ```
 
 
-![png](output_59_0.png)
+![png](markdown_export/output_59_0.png)
 
 
 > The curve represents the average missclasification rate for each complexity parameter (*cp*) (or for each size of tree). Since 10 fold of cross-validation error and pruning were computed by `rpart` by default we have 10 missclasification rates at each *cp* value. So, we can compute both a mean and a standar deviation of the missclassification rate for each *cp* value. The line connects the means for each *cp* and the small vertical lines in each *cp* are one standar error (*1 SE*) above and below the mean. Also, the horizontal purple line highlights the minimum cross-validation prediction error plus *1 SE*.
@@ -628,7 +628,7 @@ plotcp(fit.train.max, minline = TRUE, lty = 3, col = purple, lwd = 0.5, pch = 19
 # Calculate best cp by cross-validation
 min.cv.cell <- which.min(fit.train.max$cptable[, "xerror"])
 fit.train.best.cv.cp <- fit.train.max$cptable[min.cv.cell, "CP"]
-cat("The best critical parameter value given by the cross-validation prediction error is:", 
+cat("The best critical parameter value given by the cross-validation prediction error is:",
     fit.train.best.cv.cp)
 ```
 
@@ -640,12 +640,12 @@ cat("The best critical parameter value given by the cross-validation prediction 
 plotcp(fit.train.max, minline = TRUE, lty = 3, col = purple, lwd = 0.5, pch = 1, cex = 0.8)
 
 # Plot selected point
-points(x = min.cv.cell, 
+points(x = min.cv.cell,
        y = fit.train.max$cptable[which.min(fit.train.max$cptable[, "xerror"]), "xerror"],
        col = blue, pch = 19, cex = 0.6)
 
 # Plot label with cp value
-text(x = rep(min.cv.cell, 2), 
+text(x = rep(min.cv.cell, 2),
      y = fit.train.max$cptable[min.cv.cell, "xerror"] - 0.06,
      paste("cp =", round(fit.train.best.cv.cp, 6)), col = blue, cex = 0.8)
 
@@ -656,14 +656,14 @@ text(x = rep(min.cv.cell, 2),
 
 # Plot arrow indicating selected point position in plot
 arrows(x0 = min.cv.cell,
-       y0 = 0.3, 
-       x1 = min.cv.cell, 
-       y1 = fit.train.max$cptable[min.cv.cell, "xerror"] + 0.03, 
+       y0 = 0.3,
+       x1 = min.cv.cell,
+       y1 = fit.train.max$cptable[min.cv.cell, "xerror"] + 0.03,
        angle = 30, col = blue, length = 0.1, lwd = 2.5, xpd = TRUE)
 ```
 
 
-![png](output_65_0.png)
+![png](markdown_export/output_65_0.png)
 
 
 - **Obtain tree by applying the minimum cross-validation prediction error rule**
@@ -677,7 +677,7 @@ fit.train.pruned.cv <- prune(fit.train.max, cp = fit.train.best.cv.cp)
 
 ```R
 # Plot tree
-rpart.plot(fit.train.pruned.cv, main = "Pruned tree by minimum cv prediction error", 
+rpart.plot(fit.train.pruned.cv, main = "Pruned tree by minimum cv prediction error",
            box.palette = rev(c(red, orange, green, purple, blue)), type = 2)
 ```
 
@@ -685,7 +685,7 @@ rpart.plot(fit.train.pruned.cv, main = "Pruned tree by minimum cv prediction err
     “labs do not fit even at cex 0.15, there may be some overplotting”
 
 
-![png](output_68_1.png)
+![png](markdown_export/output_68_1.png)
 
 
 
@@ -694,7 +694,7 @@ rpart.plot(fit.train.pruned.cv, main = "Pruned tree by minimum cv prediction err
 cat("The depth of the pruned tree by minimum cv prediction error is:", max(rpart:::tree.depth(as.numeric(rownames(fit.train.pruned.cv$frame)))), "\n")
 
 # Number of leaves
-cat("The number of leaves is:", 
+cat("The number of leaves is:",
     sum(fit.train.pruned.cv$frame$var == "<leaf>"), "\n")
 
 # Variables involved in splits
@@ -703,9 +703,9 @@ purrr::map(unique(fit.train.pruned.cv$frame$var[which(fit.train.pruned.cv$frame$
            ~ paste(as.character(.x)))
 ```
 
-    The depth of the pruned tree by minimum cv prediction error is: 12 
-    The number of leaves is: 51 
-    The splits involved the following variables: 
+    The depth of the pruned tree by minimum cv prediction error is: 12
+    The number of leaves is: 51
+    The splits involved the following variables:
 
 
 
@@ -769,12 +769,12 @@ cat("The best critical parameter value given by the 1 SE rule is:", fit.train.be
 plotcp(fit.train.max, minline = TRUE, lty = 3, col = purple, lwd = 0.5, pch = 1, cex = 0.8)
 
 # Plot selected point
-points(x = min.1se.cell, 
+points(x = min.1se.cell,
        y = fit.train.max$cptable[min.1se.cell, "xerror"],
        col = purple, pch = 19, cex = 0.6)
 
 # Plot label with cp value
-text(x = rep(min.1se.cell, 2), 
+text(x = rep(min.1se.cell, 2),
      y = fit.train.max$cptable[min.1se.cell, "xerror"] - 0.06,
      paste("cp =", round(fit.train.best.1se.cp, 6)), col = purple, cex = 0.8)
 
@@ -785,14 +785,14 @@ text(x = rep(min.1se.cell, 2),
 
 # Plot arrow indicating selected point position in plot
 arrows(x0 = min.1se.cell,
-       y0 = 0.3, 
-       x1 = min.1se.cell, 
-       y1 = fit.train.max$cptable[min.1se.cell, "xerror"] + 0.03, 
+       y0 = 0.3,
+       x1 = min.1se.cell,
+       y1 = fit.train.max$cptable[min.1se.cell, "xerror"] + 0.03,
        angle = 30, col = purple, length = 0.1, lwd = 2.5, xpd = TRUE)
 ```
 
 
-![png](output_74_0.png)
+![png](markdown_export/output_74_0.png)
 
 
 - **Obtain tree by applying the 1 SE rule**
@@ -806,22 +806,22 @@ fit.train.pruned.1se <- prune(fit.train.max, cp = fit.train.best.1se.cp)
 
 ```R
 # Plot tree
-rpart.plot(fit.train.pruned.1se, main = "Pruned tree by 1 SE rule", 
+rpart.plot(fit.train.pruned.1se, main = "Pruned tree by 1 SE rule",
            box.palette = rev(c(red, orange, green, purple, blue)), type = 2)
 ```
 
 
-![png](output_77_0.png)
+![png](markdown_export/output_77_0.png)
 
 
 
 ```R
 # Depth of tree
-cat("The depth of the pruned tree following the 1 SE rule is:", 
+cat("The depth of the pruned tree following the 1 SE rule is:",
     max(rpart:::tree.depth(as.numeric(rownames(fit.train.pruned.1se$frame)))), "\n")
 
 # Number of leaves
-cat("The number of leaves is:", 
+cat("The number of leaves is:",
     sum(fit.train.pruned.1se$frame$var == "<leaf>"), "\n")
 
 # Variables involved in splits
@@ -830,9 +830,9 @@ purrr::map(unique(fit.train.pruned.1se$frame$var[which(fit.train.pruned.1se$fram
            ~ paste(as.character(.x)))
 ```
 
-    The depth of the pruned tree following the 1 SE rule is: 10 
-    The number of leaves is: 32 
-    The splits involved the following variables: 
+    The depth of the pruned tree following the 1 SE rule is: 10
+    The number of leaves is: 32
+    The splits involved the following variables:
 
 
 
@@ -869,84 +869,84 @@ purrr::map(unique(fit.train.pruned.1se$frame$var[which(fit.train.pruned.1se$fram
 plotcp(fit.train.max, minline = TRUE, lty = 3, col = purple, lwd = 0.5, pch = 19, cex = 0.5)
 
 # cp = 0, for maximal tree
-points(x = which(fit.train.max$cptable[, c("CP")] == 0)[1], 
+points(x = which(fit.train.max$cptable[, c("CP")] == 0)[1],
        y = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] == 0)[1], "xerror"],
        col = orange, pch = 19, cex = 0.6)
 
-text(x = which(fit.train.max$cptable[, c("CP")] == 0)[1], 
+text(x = which(fit.train.max$cptable[, c("CP")] == 0)[1],
      y = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] == 0)[1], "xerror"] - 0.06,
-     paste("cp = 0.000000"), 
+     paste("cp = 0.000000"),
      col = orange, cex = 0.8, pos = 2)
 
 text(x = which(fit.train.max$cptable[, c("CP")] == 0)[1],
      y = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] == 0)[1], "xerror"] + 0.12,
      "cp for max. tree", col = orange, cex = 0.8, pos = 2)
 
-arrows(x0 = which(fit.train.max$cptable[, c("CP")] == 0)[1], 
-       y0 = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] == 0)[1], "xerror"] + 0.08, 
-       x1 = which(fit.train.max$cptable[, c("CP")] == 0)[1], 
-       y1 = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] == 0)[1], "xerror"] + 0.02, 
+arrows(x0 = which(fit.train.max$cptable[, c("CP")] == 0)[1],
+       y0 = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] == 0)[1], "xerror"] + 0.08,
+       x1 = which(fit.train.max$cptable[, c("CP")] == 0)[1],
+       y1 = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] == 0)[1], "xerror"] + 0.02,
        angle = 30, col = orange, length = 0.1, lwd = 2, xpd = TRUE)
 
 # cp = 0.01, default rpart value
-points(x = which(fit.train.max$cptable[, c("CP")] < 0.01)[1], 
+points(x = which(fit.train.max$cptable[, c("CP")] < 0.01)[1],
        y = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] < 0.01)[1], "xerror"],
        col = green, pch = 19, cex = 0.6)
 
-text(x = which(fit.train.max$cptable[, c("CP")] < 0.01)[1], 
+text(x = which(fit.train.max$cptable[, c("CP")] < 0.01)[1],
      y = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] < 0.01)[1], "xerror"] - 0.06,
-     paste("cp =", round(fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] < 0.01)[1], "xerror"], 6)), 
+     paste("cp =", round(fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] < 0.01)[1], "xerror"], 6)),
      col = green, cex = 0.8)
 
 text(x = rep(which(fit.train.max$cptable[, c("CP")] < 0.01)[1], 2),
      y = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] < 0.01)[1], "xerror"] + 0.12,
      "default rpart", col = green, cex = 0.8)
 
-arrows(x0 = which(fit.train.max$cptable[, c("CP")] < 0.01)[1], 
-       y0 = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] < 0.01)[1], "xerror"] + 0.08, 
-       x1 = which(fit.train.max$cptable[, c("CP")] < 0.01)[1], 
-       y1 = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] < 0.01)[1], "xerror"] + 0.02, 
+arrows(x0 = which(fit.train.max$cptable[, c("CP")] < 0.01)[1],
+       y0 = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] < 0.01)[1], "xerror"] + 0.08,
+       x1 = which(fit.train.max$cptable[, c("CP")] < 0.01)[1],
+       y1 = fit.train.max$cptable[which(fit.train.max$cptable[, c("CP")] < 0.01)[1], "xerror"] + 0.02,
        angle = 30, col = green, length = 0.1, lwd = 2, xpd = TRUE)
 
 # minimum cv prediction error rule
-points(x = min.cv.cell, 
+points(x = min.cv.cell,
        y = fit.train.max$cptable[min.cv.cell, "xerror"],
        col = blue, pch = 19, cex = 0.6)
 
-text(x = rep(min.cv.cell, 2), 
+text(x = rep(min.cv.cell, 2),
      y = fit.train.max$cptable[min.cv.cell, "xerror"] - 0.06,
-     paste("cp =", round(fit.train.best.cv.cp, 6)), 
+     paste("cp =", round(fit.train.best.cv.cp, 6)),
      col = blue, cex = 0.8, pos = 4)
 
 text(x = rep(min.cv.cell, 2),
      y = fit.train.max$cptable[min.cv.cell, "xerror"] + 0.12,
      "CV error rule", col = blue, cex = 0.8, pos = 4)
 
-arrows(x0 = min.cv.cell, y0 = fit.train.max$cptable[min.cv.cell, "xerror"] + 0.08, 
-       x1 = min.cv.cell, y1 = fit.train.max$cptable[min.cv.cell, "xerror"] + 0.02, 
+arrows(x0 = min.cv.cell, y0 = fit.train.max$cptable[min.cv.cell, "xerror"] + 0.08,
+       x1 = min.cv.cell, y1 = fit.train.max$cptable[min.cv.cell, "xerror"] + 0.02,
        angle = 30, col = blue, length = 0.1, lwd = 2, xpd = TRUE)
 
 # 1 SE rule
-points(x = min.1se.cell, 
+points(x = min.1se.cell,
        y = fit.train.max$cptable[min.1se.cell, "xerror"],
        col = purple, pch = 19, cex = 0.6)
 
-text(x = rep(min.1se.cell, 2), 
+text(x = rep(min.1se.cell, 2),
      y = fit.train.max$cptable[min.1se.cell, "xerror"] - 0.06,
-     paste("cp =", round(fit.train.best.1se.cp, 6)), 
+     paste("cp =", round(fit.train.best.1se.cp, 6)),
      col = purple, cex = 0.8, pos = 2)
 
 text(x = rep(min.1se.cell, 2),
      y = fit.train.max$cptable[min.1se.cell, "xerror"] + 0.12,
      "1 SE rule", col = purple, cex = 0.8, pos = 2)
 
-arrows(x0 = min.1se.cell, y0 = fit.train.max$cptable[min.1se.cell, "xerror"] + 0.08, 
-       x1 = min.1se.cell, y1 = fit.train.max$cptable[min.1se.cell, "xerror"] + 0.02, 
+arrows(x0 = min.1se.cell, y0 = fit.train.max$cptable[min.1se.cell, "xerror"] + 0.08,
+       x1 = min.1se.cell, y1 = fit.train.max$cptable[min.1se.cell, "xerror"] + 0.02,
        angle = 30, col = purple, length = 0.1, lwd = 2, xpd = TRUE)
 ```
 
 
-![png](output_81_0.png)
+![png](markdown_export/output_81_0.png)
 
 
 - **Compare trees: default rpart tree, pruned tree by best cv prediction error and pruned tree by 1 SE rule**
@@ -954,19 +954,19 @@ arrows(x0 = min.1se.cell, y0 = fit.train.max$cptable[min.1se.cell, "xerror"] + 0
 
 ```R
 # Compare obtained trees
-cat("Are default rpart tree identical to pruned tree by minimizing CV error rule? A:", 
+cat("Are default rpart tree identical to pruned tree by minimizing CV error rule? A:",
     identical(fit.train.def, fit.train.pruned.cv), "\n")
 
-cat("Are default rpart tree identical to pruned tree by 1 SE rule? A:", 
+cat("Are default rpart tree identical to pruned tree by 1 SE rule? A:",
     identical(fit.train.def, fit.train.pruned.1se), "\n")
 
-cat("Are pruned tree by by minimizing CV error rule identical to pruned tree by 1 SE rule? A:", 
+cat("Are pruned tree by by minimizing CV error rule identical to pruned tree by 1 SE rule? A:",
     identical(fit.train.pruned.cv, fit.train.pruned.1se), "\n")
 ```
 
-    Are default rpart tree identical to pruned tree by minimizing CV error rule? A: FALSE 
-    Are default rpart tree identical to pruned tree by 1 SE rule? A: FALSE 
-    Are pruned tree by by minimizing CV error rule identical to pruned tree by 1 SE rule? A: FALSE 
+    Are default rpart tree identical to pruned tree by minimizing CV error rule? A: FALSE
+    Are default rpart tree identical to pruned tree by 1 SE rule? A: FALSE
+    Are pruned tree by by minimizing CV error rule identical to pruned tree by 1 SE rule? A: FALSE
 
 
 > All the compared trees are different. They were build by different cp values hence different penalization frames. They have different depths, number of leaves, variables involved in splits and sizes.
@@ -977,7 +977,7 @@ cat("Are pruned tree by by minimizing CV error rule identical to pruned tree by 
 
 
 ```R
-# Apply fitted model tree to test dataset and calculate the gain and missclasification for each observation 
+# Apply fitted model tree to test dataset and calculate the gain and missclasification for each observation
 def.error <- test %>% mutate(pred = predict(fit.train.def, test, type = "class"),
                              gain = ifelse(pred == type, 1, 0),
                              error = ifelse(pred != type, 1, 0))
@@ -1000,8 +1000,8 @@ def.error <- test %>% mutate(pred = predict(fit.train.def, test, type = "class")
 
 
 ```R
-# Apply fitted model tree to test dataset and calculate the gain and missclasification for each observation 
-d1.error <- test %>% mutate(pred = predict(fit.train.d1, test, type = "class"), 
+# Apply fitted model tree to test dataset and calculate the gain and missclasification for each observation
+d1.error <- test %>% mutate(pred = predict(fit.train.d1, test, type = "class"),
                             gain = ifelse(pred == type, 1, 0),
                             error = ifelse(pred != type, 1, 0))
 
@@ -1023,7 +1023,7 @@ d1.error <- test %>% mutate(pred = predict(fit.train.d1, test, type = "class"),
 
 
 ```R
-# Apply fitted model tree to test dataset and calculate the gain and missclasification for each observation 
+# Apply fitted model tree to test dataset and calculate the gain and missclasification for each observation
 max.error <- test %>% mutate(pred = predict(fit.train.max, test, type = "class"),
                              gain = ifelse(pred == type, 1, 0),
                              error = ifelse(pred != type, 1, 0))
@@ -1046,7 +1046,7 @@ max.error <- test %>% mutate(pred = predict(fit.train.max, test, type = "class")
 
 
 ```R
-# Apply fitted model tree to test dataset and calculate the gain and missclasification for each observation 
+# Apply fitted model tree to test dataset and calculate the gain and missclasification for each observation
 cv.error <- test %>% mutate(pred = predict(fit.train.pruned.cv, test, type = "class"),
                             gain = ifelse(pred == type, 1, 0),
                             error = ifelse(pred != type, 1, 0))
@@ -1069,7 +1069,7 @@ cv.error <- test %>% mutate(pred = predict(fit.train.pruned.cv, test, type = "cl
 
 
 ```R
-# Apply fitted model tree to test dataset and calculate the gain and missclasification for each observation 
+# Apply fitted model tree to test dataset and calculate the gain and missclasification for each observation
 se.error <- test %>% mutate(pred = predict(fit.train.pruned.1se, test, type = "class"),
                             gain = ifelse(pred == type, 1, 0),
                             error = ifelse(pred != type, 1, 0))
@@ -1092,7 +1092,7 @@ se.error <- test %>% mutate(pred = predict(fit.train.pruned.1se, test, type = "c
 ```R
 # Create dataframe with missclasification and gains of the tree models and sort by missclasification error
 trees_missc <- rbind(def.missc_error, d1.missc_error, max.missc_error, cv.missc_error, se.missc_error) %>%  
-                    mutate(model = c('tree_def', 'tree_d1', 'tree_max', 'tree_cv', 'tree_1se')) %>% 
+                    mutate(model = c('tree_def', 'tree_d1', 'tree_max', 'tree_cv', 'tree_1se')) %>%
                         arrange(missc_error) %>%
                             mutate(rank = 1:length(model)) %>%
                                 select(rank, model, missc_error, gain)
@@ -1126,17 +1126,17 @@ library(randomForest)
 
     randomForest 4.6-12
     Type rfNews() to see new features/changes/bug fixes.
-    
+
     Attaching package: ‘randomForest’
-    
+
     The following object is masked from ‘package:dplyr’:
-    
+
         combine
-    
+
     The following object is masked from ‘package:ggplot2’:
-    
+
         margin
-    
+
 
 
 ### 3.2. Build a RF for mtry=p (unpruned bagging) and calculate the gain in terms of error with respect to a single tree
@@ -1151,13 +1151,13 @@ p <- ncol(train) - 1
 ```
 
 
-    
+
     Call:
-     randomForest(formula = type ~ ., data = train, mtry = p) 
+     randomForest(formula = type ~ ., data = train, mtry = p)
                    Type of random forest: classification
                          Number of trees: 500
     No. of variables tried at each split: 57
-    
+
             OOB estimate of  error rate: 5.81%
     Confusion matrix:
             nonspam spam class.error
@@ -1169,14 +1169,14 @@ p <- ncol(train) - 1
 
 
 ```R
-# Apply random forest fitted model to test dataset and calculate the gain 
-# and missclasification for each observation 
+# Apply random forest fitted model to test dataset and calculate the gain
+# and missclasification for each observation
 rf.bag.error <- test %>% mutate(pred = predict(rf.bag, test, type = "class"),
                                 gain = ifelse(pred == type, 1, 0),
                                 error = ifelse(pred != type, 1, 0))
 
 # Calculate the mean gain and mean missclasification and print them
-(rf.bag.missc_error <- rf.bag.error %>% summarize(gain = mean(gain), 
+(rf.bag.missc_error <- rf.bag.error %>% summarize(gain = mean(gain),
                                                   missc_error = mean(error)))
 ```
 
@@ -1194,20 +1194,20 @@ rf.bag.error <- test %>% mutate(pred = predict(rf.bag, test, type = "class"),
 
 
 ```R
-# Create dataframe with missclasification and gains of the tree models 
+# Create dataframe with missclasification and gains of the tree models
 # and sort by missclasification error
 rf_missc_comp1 <- rbind(rf.bag.missc_error) %>%  
-                    mutate(model = c('rf_bag')) %>% 
-                        select(model, missc_error, gain) 
-                            
-rf_missc_comp1 %>% 
-    rbind(trees_missc[, 2:4]) %>% 
+                    mutate(model = c('rf_bag')) %>%
+                        select(model, missc_error, gain)
+
+rf_missc_comp1 %>%
+    rbind(trees_missc[, 2:4]) %>%
         arrange(missc_error) %>%
             mutate(rank = 1:length(model),
                    gain_increase = ifelse(is.na(gain[rank + 1]),
                                           yes = 0,
-                                          no = gain - gain[rank + 1]), 
-                  rel_gain_increase_percent = round(100 * gain_increase, 2)) %>% 
+                                          no = gain - gain[rank + 1]),
+                  rel_gain_increase_percent = round(100 * gain_increase, 2)) %>%
                 select(rank, model, missc_error, gain, rel_gain_increase_percent)
 ```
 
@@ -1237,13 +1237,13 @@ rf_missc_comp1 %>%
 ```
 
 
-    
+
     Call:
-     randomForest(formula = type ~ ., data = train) 
+     randomForest(formula = type ~ ., data = train)
                    Type of random forest: classification
                          Number of trees: 500
     No. of variables tried at each split: 7
-    
+
             OOB estimate of  error rate: 4.84%
     Confusion matrix:
             nonspam spam class.error
@@ -1255,14 +1255,14 @@ rf_missc_comp1 %>%
 
 
 ```R
-# Apply random forest fitted model to test dataset and calculate the gain 
-# and missclasification for each observation 
+# Apply random forest fitted model to test dataset and calculate the gain
+# and missclasification for each observation
 rf.def.error <- test %>% mutate(pred = predict(rf.def, test, type = "class"),
                                 gain = ifelse(pred == type, 1, 0),
                                 error = ifelse(pred != type, 1, 0))
 
 # Calculate the mean gain and mean missclasification and print them
-(rf.def.missc_error <- rf.def.error %>% summarize(gain = mean(gain), 
+(rf.def.missc_error <- rf.def.error %>% summarize(gain = mean(gain),
                                                   missc_error = mean(error)))
 ```
 
@@ -1280,22 +1280,22 @@ rf.def.error <- test %>% mutate(pred = predict(rf.def, test, type = "class"),
 
 
 ```R
-# Create dataframe with missclasification and gains of the tree models 
+# Create dataframe with missclasification and gains of the tree models
 # and sort by missclasification error
 rf_missc_comp2 <- rbind(rf.def.missc_error) %>%
-                    mutate(model = c('rf_def')) %>% 
+                    mutate(model = c('rf_def')) %>%
                         select(model, missc_error, gain)                        
 
-rf_missc_comp2 <- 
+rf_missc_comp2 <-
         rf_missc_comp2 %>%
-            rbind(rf_missc_comp1) %>% 
+            rbind(rf_missc_comp1) %>%
                 #rbind(trees_missc[, 2:4]) %>%
                     arrange(missc_error) %>%
                         mutate(rank = 1:length(model),
                                gain_increase = ifelse(is.na(gain[rank + 1]),
                                                 yes = 0,
                                                 no = gain - gain[rank + 1]),
-                                rel_gain_increase_percent = round(100 * gain_increase, 2)) %>% 
+                                rel_gain_increase_percent = round(100 * gain_increase, 2)) %>%
                                     select(rank, model, missc_error, gain, rel_gain_increase_percent)
 # Print results
 rf_missc_comp2
@@ -1342,18 +1342,18 @@ rf.def.trace.oob <- as.data.frame(rf.def.trace$err.rate)
 rf.def.trace.oob$OOB <- rf.def.trace.oob$OOB * 100
 
 # Plot OOB vs ntree
-ggplot(rf.def.trace.oob, aes(x = 1:length(OOB), y = OOB)) + 
-geom_point(cex = 0.75, color = darkgray, show.legend = FALSE) + 
+ggplot(rf.def.trace.oob, aes(x = 1:length(OOB), y = OOB)) +
+geom_point(cex = 0.75, color = darkgray, show.legend = FALSE) +
 labs(x = "ntree", y = "OOB error")
 ```
 
 
 
 
-![png](output_117_1.png)
+![png](markdown_export/output_117_1.png)
 
 
-> The OOB error decrease with the number of trees. 
+> The OOB error decrease with the number of trees.
 
 ## 4. Variable importance
 
@@ -1372,11 +1372,11 @@ imp.def <- as.data.frame(rf.def$importance)
 imp.def$variable <- rownames(imp.def)
 
 # Print the top 10 most important variables
-imp.def <- imp.def %>% 
+imp.def <- imp.def %>%
                arrange(desc(MeanDecreaseAccuracy)) %>%
-                   mutate(rank = 1:length(MeanDecreaseAccuracy), 
-                          percent = round(100 * MeanDecreaseAccuracy / sum(MeanDecreaseAccuracy), 2)) %>% 
-                       select(rank, variable, MeanDecreaseAccuracy, percent) 
+                   mutate(rank = 1:length(MeanDecreaseAccuracy),
+                          percent = round(100 * MeanDecreaseAccuracy / sum(MeanDecreaseAccuracy), 2)) %>%
+                       select(rank, variable, MeanDecreaseAccuracy, percent)
 
 imp.def %>% top_n(10, MeanDecreaseAccuracy)
 ```
@@ -1406,23 +1406,23 @@ imp.def %>% top_n(10, MeanDecreaseAccuracy)
 
 
 ```R
-# Plot the variables by importance 
+# Plot the variables by importance
 ggplot(imp.def) +
-geom_col(aes(x = -rank, y = MeanDecreaseAccuracy, 
-             fill = MeanDecreaseAccuracy), 
-         color = "white", show.legend = FALSE) + 
-labs(x = "variable", y = "Mean Decrease Accuracy", 
-     title = "Variable importance", 
-     subtitle = "Default Random Forest") + 
+geom_col(aes(x = -rank, y = MeanDecreaseAccuracy,
+             fill = MeanDecreaseAccuracy),
+         color = "white", show.legend = FALSE) +
+labs(x = "variable", y = "Mean Decrease Accuracy",
+     title = "Variable importance",
+     subtitle = "Default Random Forest") +
 scale_x_continuous(labels = imp.def$variable, breaks = -imp.def$rank) +
-scale_fill_gradientn(colours = c(blue, green, red)) + 
+scale_fill_gradientn(colours = c(blue, green, red)) +
 coord_flip()
 ```
 
 
 
 
-![png](output_125_1.png)
+![png](markdown_export/output_125_1.png)
 
 
 ### 4.3. Calculate the importance of spam variables for stumps RF
@@ -1431,18 +1431,18 @@ coord_flip()
 
 
 ```R
-(rf.bagstump <- randomForest(type ~ ., data = train, maxnodes = 2, 
+(rf.bagstump <- randomForest(type ~ ., data = train, maxnodes = 2,
                              mtry = p, ntree = 1000, importance = TRUE))
 ```
 
 
-    
+
     Call:
-     randomForest(formula = type ~ ., data = train, maxnodes = 2,      mtry = p, ntree = 1000, importance = TRUE) 
+     randomForest(formula = type ~ ., data = train, maxnodes = 2,      mtry = p, ntree = 1000, importance = TRUE)
                    Type of random forest: classification
                          Number of trees: 1000
     No. of variables tried at each split: 57
-    
+
             OOB estimate of  error rate: 19.84%
     Confusion matrix:
             nonspam spam class.error
@@ -1460,8 +1460,8 @@ imp.bagstump$variable <- rownames(imp.bagstump)
 imp.bagstump <- imp.bagstump %>%
                     arrange(desc(MeanDecreaseAccuracy)) %>%
                         mutate(rank = 1:length(MeanDecreaseAccuracy),
-                               percent = round(100 * MeanDecreaseAccuracy / sum(MeanDecreaseAccuracy), 2)) %>% 
-                            select(rank, variable, MeanDecreaseAccuracy, percent) 
+                               percent = round(100 * MeanDecreaseAccuracy / sum(MeanDecreaseAccuracy), 2)) %>%
+                            select(rank, variable, MeanDecreaseAccuracy, percent)
 
 imp.bagstump[1:10,]
 ```
@@ -1487,23 +1487,23 @@ imp.bagstump[1:10,]
 
 
 ```R
-# Plot the variables by importance 
+# Plot the variables by importance
 ggplot(imp.bagstump) +
-geom_col(aes(x = -rank, y = MeanDecreaseAccuracy, 
-             fill = MeanDecreaseAccuracy), 
-         color = "white", show.legend = FALSE) + 
-labs(x = "variable", y = "Mean Decrease Accuracy", 
-     title = "Variable importance", 
-     subtitle = "Bagging Stump Random Forest") + 
+geom_col(aes(x = -rank, y = MeanDecreaseAccuracy,
+             fill = MeanDecreaseAccuracy),
+         color = "white", show.legend = FALSE) +
+labs(x = "variable", y = "Mean Decrease Accuracy",
+     title = "Variable importance",
+     subtitle = "Bagging Stump Random Forest") +
 scale_x_continuous(labels = imp.bagstump$variable, breaks = -imp.bagstump$rank) +
-scale_fill_gradientn(colours = c(blue, green, red)) + 
+scale_fill_gradientn(colours = c(blue, green, red)) +
 coord_flip()
 ```
 
 
 
 
-![png](output_130_1.png)
+![png](markdown_export/output_130_1.png)
 
 
 > **Answer:** the most important variables for Bagging Stump Random Forest are *charDollar* and *charExclamation*.
@@ -1512,18 +1512,18 @@ coord_flip()
 
 
 ```R
-(rf.defstump <- randomForest(type ~ ., data = train, maxnodes = 2, 
+(rf.defstump <- randomForest(type ~ ., data = train, maxnodes = 2,
                              ntree = 1000, importance = TRUE))
 ```
 
 
-    
+
     Call:
-     randomForest(formula = type ~ ., data = train, maxnodes = 2,      ntree = 1000, importance = TRUE) 
+     randomForest(formula = type ~ ., data = train, maxnodes = 2,      ntree = 1000, importance = TRUE)
                    Type of random forest: classification
                          Number of trees: 1000
     No. of variables tried at each split: 7
-    
+
             OOB estimate of  error rate: 16.24%
     Confusion matrix:
             nonspam spam class.error
@@ -1541,8 +1541,8 @@ imp.defstump$variable <- rownames(imp.defstump)
 imp.defstump <- imp.defstump %>%
                     arrange(desc(MeanDecreaseAccuracy)) %>%
                         mutate(rank = 1:length(MeanDecreaseAccuracy),
-                               percent = round(100 * MeanDecreaseAccuracy / sum(MeanDecreaseAccuracy), 2)) %>% 
-                            select(rank, variable, MeanDecreaseAccuracy, percent) 
+                               percent = round(100 * MeanDecreaseAccuracy / sum(MeanDecreaseAccuracy), 2)) %>%
+                            select(rank, variable, MeanDecreaseAccuracy, percent)
 
 imp.defstump %>% top_n(10, MeanDecreaseAccuracy)
 ```
@@ -1568,19 +1568,19 @@ imp.defstump %>% top_n(10, MeanDecreaseAccuracy)
 
 
 ```R
-# Plot the variables by importance 
+# Plot the variables by importance
 ggplot(imp.defstump) +
-geom_col(aes(x = -rank, y = MeanDecreaseAccuracy, fill = MeanDecreaseAccuracy), color = "white", show.legend = FALSE) + 
-labs(x = "variable", y = "Mean Decrease Accuracy", title = "Variable importance", subtitle = "Default mtry Random Forest") + 
+geom_col(aes(x = -rank, y = MeanDecreaseAccuracy, fill = MeanDecreaseAccuracy), color = "white", show.legend = FALSE) +
+labs(x = "variable", y = "Mean Decrease Accuracy", title = "Variable importance", subtitle = "Default mtry Random Forest") +
 scale_x_continuous(labels = imp.defstump$variable, breaks = -imp.defstump$rank) +
-scale_fill_gradientn(colours = c(blue, green, red)) + 
+scale_fill_gradientn(colours = c(blue, green, red)) +
 coord_flip()
 ```
 
 
 
 
-![png](output_135_1.png)
+![png](markdown_export/output_135_1.png)
 
 
 > **Answer:** the most important variables for Default `mtry` Random Forest are *charDollar*, *charExclamation* and *your*.
@@ -1589,18 +1589,18 @@ coord_flip()
 
 
 ```R
-(rf.1stump <- randomForest(type ~ ., data = train, maxnodes = 2, 
+(rf.1stump <- randomForest(type ~ ., data = train, maxnodes = 2,
                            mtry = 1, ntree = 1000, importance = TRUE))
 ```
 
 
-    
+
     Call:
-     randomForest(formula = type ~ ., data = train, maxnodes = 2,      mtry = 1, ntree = 1000, importance = TRUE) 
+     randomForest(formula = type ~ ., data = train, maxnodes = 2,      mtry = 1, ntree = 1000, importance = TRUE)
                    Type of random forest: classification
                          Number of trees: 1000
     No. of variables tried at each split: 1
-    
+
             OOB estimate of  error rate: 39.65%
     Confusion matrix:
             nonspam spam class.error
@@ -1618,8 +1618,8 @@ imp.1stump$variable <- rownames(imp.1stump)
 imp.1stump <- imp.1stump %>%
                     arrange(desc(MeanDecreaseAccuracy)) %>%
                         mutate(rank = 1:length(MeanDecreaseAccuracy),
-                               percent = round(100 * MeanDecreaseAccuracy / sum(MeanDecreaseAccuracy), 2)) %>% 
-                            select(rank, variable, MeanDecreaseAccuracy, percent) 
+                               percent = round(100 * MeanDecreaseAccuracy / sum(MeanDecreaseAccuracy), 2)) %>%
+                            select(rank, variable, MeanDecreaseAccuracy, percent)
 
 imp.1stump %>% top_n(10, MeanDecreaseAccuracy)
 ```
@@ -1645,23 +1645,23 @@ imp.1stump %>% top_n(10, MeanDecreaseAccuracy)
 
 
 ```R
-# Plot the variables by importance 
+# Plot the variables by importance
 ggplot(imp.1stump) +
-geom_col(aes(x = -rank, y = MeanDecreaseAccuracy, 
-             fill = MeanDecreaseAccuracy), 
-         color = "white", show.legend = FALSE) + 
-labs(x = "variable", y = "Mean Decrease Accuracy", 
-     title = "Variable importance", 
-     subtitle = "mtry = 1 Random Forest") + 
+geom_col(aes(x = -rank, y = MeanDecreaseAccuracy,
+             fill = MeanDecreaseAccuracy),
+         color = "white", show.legend = FALSE) +
+labs(x = "variable", y = "Mean Decrease Accuracy",
+     title = "Variable importance",
+     subtitle = "mtry = 1 Random Forest") +
 scale_x_continuous(labels = imp.1stump$variable, breaks = -imp.1stump$rank) +
-scale_fill_gradientn(colours = c(blue, green, red)) + 
+scale_fill_gradientn(colours = c(blue, green, red)) +
 coord_flip()
 ```
 
 
 
 
-![png](output_140_1.png)
+![png](markdown_export/output_140_1.png)
 
 
 > **Answer:** the most important variables for `mtry=1` Random Forest is *charExclamation*.
@@ -1670,8 +1670,8 @@ coord_flip()
 
 
 ```R
-# Apply random forest fitted model to test dataset and 
-# calculate the gain and missclasification for each observation 
+# Apply random forest fitted model to test dataset and
+# calculate the gain and missclasification for each observation
 rf.bagstump.error <- test %>% mutate(pred = predict(rf.bagstump, test, type = "class"),
                                      gain = ifelse(pred == type, 1, 0),
                                      error = ifelse(pred != type, 1, 0))
@@ -1692,21 +1692,21 @@ rf.1stump.missc_error <- rf.1stump.error %>% summarize(gain = mean(gain), missc_
 
 
 ```R
-# Create dataframe with missclasification and gains of the tree models 
+# Create dataframe with missclasification and gains of the tree models
 # and sort by missclasification error
-rf_missc_comp3 <- rbind(rf.bagstump.missc_error, rf.defstump.missc_error, rf.1stump.missc_error) %>% 
-                    mutate(model = c('rf_bagstump', 'rf_defstump', 'rf_1stump')) %>% 
+rf_missc_comp3 <- rbind(rf.bagstump.missc_error, rf.defstump.missc_error, rf.1stump.missc_error) %>%
+                    mutate(model = c('rf_bagstump', 'rf_defstump', 'rf_1stump')) %>%
                         select(model, missc_error, gain)   
-rf_missc_comp3 <- 
+rf_missc_comp3 <-
         rf_missc_comp3 %>%
-            rbind(rf_missc_comp2[, 2:4]) %>% 
+            rbind(rf_missc_comp2[, 2:4]) %>%
                 rbind(trees_missc[, 2:4]) %>%
                     arrange(missc_error) %>%
                         mutate(rank = 1:length(model),
                                gain_increase = ifelse(is.na(gain[rank + 1]),
                                                 yes = 0,
                                                 no = gain - gain[rank + 1]),
-                                rel_gain_increase_percent = round(100 * gain_increase, 2)) %>% 
+                                rel_gain_increase_percent = round(100 * gain_increase, 2)) %>%
                                     select(rank, model, missc_error, gain, rel_gain_increase_percent)
 
 rf_missc_comp3
@@ -1767,7 +1767,7 @@ rf.p8.oob <- data.frame(rf.p8$err.rate) %>% select(OOB) %>% mutate(OOB = OOB * 1
 rf.p9.oob <- data.frame(rf.p9$err.rate) %>% select(OOB) %>% mutate(OOB = OOB * 100, ntree = 1:length(OOB), mtry = "p/9")
 rf.p10.oob <- data.frame(rf.p10$err.rate) %>% select(OOB) %>% mutate(OOB = OOB * 100, ntree = 1:length(OOB), mtry = "p/10")
 
-# Bind 
+# Bind
 rf.p.oob <- rbind(rf.p1.oob, rf.p2.oob, rf.p3.oob, rf.p4.oob, rf.p5.oob, rf.p6.oob, rf.p7.oob, rf.p8.oob, rf.p9.oob, rf.p10.oob)
 ```
 
@@ -1776,8 +1776,8 @@ rf.p.oob <- rbind(rf.p1.oob, rf.p2.oob, rf.p3.oob, rf.p4.oob, rf.p5.oob, rf.p6.o
 
 ```R
 # Plot OOB error vs ntree
-ggplot() + 
-geom_line(data = rf.p.oob, aes(x = ntree, y = OOB, color = mtry), lwd = 0.5, show.legend = TRUE) + 
+ggplot() +
+geom_line(data = rf.p.oob, aes(x = ntree, y = OOB, color = mtry), lwd = 0.5, show.legend = TRUE) +
 labs(x = "ntree", y = "OOB error", title = "Influence of the mtry parameter on the OOB error") +
 scale_color_brewer(palette = "Spectral")
 ```
@@ -1785,7 +1785,7 @@ scale_color_brewer(palette = "Spectral")
 
 
 
-![png](output_152_1.png)
+![png](markdown_export/output_152_1.png)
 
 
 > The OOB error tends to decrease with lower `mtry` values. However, the OOB error seems to have the lowest values with p/7 and p/8 (`mtry ~ 8` and `mtry ~ 7`).
@@ -1795,44 +1795,44 @@ scale_color_brewer(palette = "Spectral")
 
 ```R
 # Get importance by RF model
-imp.rf.p1 <- as.data.frame(rf.p1$importance) %>% 
-                mutate(variable = rownames(as.data.frame(rf.p1$importance)), model = "p") %>% 
+imp.rf.p1 <- as.data.frame(rf.p1$importance) %>%
+                mutate(variable = rownames(as.data.frame(rf.p1$importance)), model = "p") %>%
                     select(variable, MeanDecreaseAccuracy, model)
 
-imp.rf.p2 <- as.data.frame(rf.p2$importance) %>% 
-                mutate(variable = rownames(as.data.frame(rf.p2$importance)), model = "p/2") %>% 
+imp.rf.p2 <- as.data.frame(rf.p2$importance) %>%
+                mutate(variable = rownames(as.data.frame(rf.p2$importance)), model = "p/2") %>%
                     select(variable, MeanDecreaseAccuracy, model)
 
-imp.rf.p3 <- as.data.frame(rf.p3$importance) %>% 
-                mutate(variable = rownames(as.data.frame(rf.p3$importance)), model = "p/3") %>% 
+imp.rf.p3 <- as.data.frame(rf.p3$importance) %>%
+                mutate(variable = rownames(as.data.frame(rf.p3$importance)), model = "p/3") %>%
                     select(variable, MeanDecreaseAccuracy, model)
 
-imp.rf.p4 <- as.data.frame(rf.p4$importance) %>% 
-                mutate(variable = rownames(as.data.frame(rf.p4$importance)), model = "p/4") %>% 
+imp.rf.p4 <- as.data.frame(rf.p4$importance) %>%
+                mutate(variable = rownames(as.data.frame(rf.p4$importance)), model = "p/4") %>%
                     select(variable, MeanDecreaseAccuracy, model)
 
-imp.rf.p5 <- as.data.frame(rf.p5$importance) %>% 
-                mutate(variable = rownames(as.data.frame(rf.p5$importance)), model = "p/5") %>% 
+imp.rf.p5 <- as.data.frame(rf.p5$importance) %>%
+                mutate(variable = rownames(as.data.frame(rf.p5$importance)), model = "p/5") %>%
                     select(variable, MeanDecreaseAccuracy, model)
 
-imp.rf.p6 <- as.data.frame(rf.p6$importance) %>% 
-                mutate(variable = rownames(as.data.frame(rf.p6$importance)), model = "p/6") %>% 
+imp.rf.p6 <- as.data.frame(rf.p6$importance) %>%
+                mutate(variable = rownames(as.data.frame(rf.p6$importance)), model = "p/6") %>%
                     select(variable, MeanDecreaseAccuracy, model)
 
-imp.rf.p7 <- as.data.frame(rf.p7$importance) %>% 
-                mutate(variable = rownames(as.data.frame(rf.p7$importance)), model = "p/7") %>% 
+imp.rf.p7 <- as.data.frame(rf.p7$importance) %>%
+                mutate(variable = rownames(as.data.frame(rf.p7$importance)), model = "p/7") %>%
                     select(variable, MeanDecreaseAccuracy, model)
 
-imp.rf.p8 <- as.data.frame(rf.p8$importance) %>% 
-                mutate(variable = rownames(as.data.frame(rf.p8$importance)), model = "p/8") %>% 
+imp.rf.p8 <- as.data.frame(rf.p8$importance) %>%
+                mutate(variable = rownames(as.data.frame(rf.p8$importance)), model = "p/8") %>%
                     select(variable, MeanDecreaseAccuracy, model)
 
-imp.rf.p9 <- as.data.frame(rf.p9$importance) %>% 
-                mutate(variable = rownames(as.data.frame(rf.p9$importance)), model = "p/9") %>% 
+imp.rf.p9 <- as.data.frame(rf.p9$importance) %>%
+                mutate(variable = rownames(as.data.frame(rf.p9$importance)), model = "p/9") %>%
                     select(variable, MeanDecreaseAccuracy, model)
 
-imp.rf.p10 <- as.data.frame(rf.p10$importance) %>% 
-                mutate(variable = rownames(as.data.frame(rf.p10$importance)), model = "p/10") %>% 
+imp.rf.p10 <- as.data.frame(rf.p10$importance) %>%
+                mutate(variable = rownames(as.data.frame(rf.p10$importance)), model = "p/10") %>%
                     select(variable, MeanDecreaseAccuracy, model)
 ```
 
@@ -1852,7 +1852,7 @@ varimp.matrix <- cbind(imp.rf.p1$MeanDecreaseAccuracy,
 
 varimp.matrix <- as.matrix(varimp.matrix)
 
-# Add rownames 
+# Add rownames
 rownames(varimp.matrix) <- imp.rf.p1$variable
 colnames(varimp.matrix) <- c("p", "p/2", "p/3", "p/4", "p/5", "p/6", "p/7", "p/8", "p/9", "p/10")
 
@@ -1878,16 +1878,16 @@ head(varimp.matrix)
 
 ```R
 # Plot matrix
-ggplot(reshape2::melt(varimp.matrix)) + 
-geom_raster(aes(x = Var2, y = Var1, fill = value), interpolate = FALSE) + 
-labs(x = "mtry", y = "variables", title = "Variable importance") + 
+ggplot(reshape2::melt(varimp.matrix)) +
+geom_raster(aes(x = Var2, y = Var1, fill = value), interpolate = FALSE) +
+labs(x = "mtry", y = "variables", title = "Variable importance") +
 scale_fill_gradientn(colours = c(blue, green, red))
 ```
 
 
 
 
-![png](output_157_1.png)
+![png](markdown_export/output_157_1.png)
 
 
 > The variables *capitalLong*, *charExclamation*, *capitalTotal*, *capitalAve*, *charDollar*, *hp* and *remove* seems to be important for all the Random Forest models with different `mtry` values. Also, higher variable importance values are related to higher `mtry` values.
@@ -1912,7 +1912,7 @@ library(VSURF)
 
 
 ```R
-# Subset spam data 
+# Subset spam data
 spam.app <- spam %>% sample_n(500)
 ```
 
@@ -1934,7 +1934,7 @@ plot(vsurf.spam, cex.axis = 1.1, cex.lab = 1.2)
 ```
 
 
-![png](output_166_0.png)
+![png](markdown_export/output_166_0.png)
 
 
 > The top plots of the figure illustrate the Thresholding step and the bottom plots are associated with Interpretation and Prediction steps respectively.
@@ -1947,15 +1947,15 @@ plot(vsurf.spam, cex.axis = 1.1, cex.lab = 1.2)
 summary(vsurf.spam)
 ```
 
-    
-     VSURF computation time: 3.1 mins 
-    
-     VSURF selected: 
+
+     VSURF computation time: 3.1 mins
+
+     VSURF selected:
     	51 variables at thresholding step (in 23.9 secs)
     	21 variables at interpretation step (in 1.6 mins)
     	10 variables at prediction step (in 1 mins)
-    
-     VSURF ran in parallel on a PSOCK cluster and used 7 cores 
+
+     VSURF ran in parallel on a PSOCK cluster and used 7 cores
 
 
 
@@ -1970,11 +1970,11 @@ cat("\n")
 cat("> Kept variables: "); cat(paste0(kept1.app, ","))
 ```
 
-    Thresholding Step 
+    Thresholding Step
     > Removed variables: num3d, report, parts, direct, table, charHash, type,
     > Kept variables: charDollar, charExclamation, remove, hp, capitalLong, your, capitalTotal, capitalAve, our, george, free, num000, num1999, hpl, edu, receive, over, business, you, internet, data, email, will, original, technology, meeting, money, num85, re, order, num650, charRoundbracket, all, charSemicolon, lab, cs, address, addresses, conference, pm, labs, mail, charSquarebracket, credit, project, telnet, font, num857, num415, make, people,
 
-> In the first step ("thresholding step") 7 irrelevant variables were eliminated and 51 variables were kept. 
+> In the first step ("thresholding step") 7 irrelevant variables were eliminated and 51 variables were kept.
 
 
 ```R
@@ -1988,11 +1988,11 @@ cat("\n")
 cat("> Kept variables: "); cat(paste0(kept2.app, ","))
 ```
 
-    Interpretation Step 
+    Interpretation Step
     > Removed variables: make, address, all, num3d, order, mail, will, people, report, addresses, email, credit, font, money, num650, lab, labs, telnet, num857, num415, num85, technology, parts, pm, direct, cs, meeting, original, project, re, table, conference, charSemicolon, charRoundbracket, charSquarebracket, charHash, type,
     > Kept variables: charDollar, charExclamation, remove, hp, capitalLong, your, capitalTotal, capitalAve, our, george, free, num000, num1999, hpl, edu, receive, over, business, you, internet, data,
 
-> In the second step ("interpretation step") 37 variables non related to the response for interpretation purpose were eliminated and 21 variables were kept. 
+> In the second step ("interpretation step") 37 variables non related to the response for interpretation purpose were eliminated and 21 variables were kept.
 
 
 ```R
@@ -2006,13 +2006,13 @@ cat("\n")
 cat("> Kept variables: "); cat(paste0(kept3.app, ","))
 ```
 
-    Prediction Step 
+    Prediction Step
     > Removed variables: make, address, all, num3d, over, internet, order, mail, receive, will, people, report, addresses, free, business, email, you, credit, font, num000, money, hp, num650, lab, labs, telnet, num857, data, num415, num85, technology, parts, pm, direct, cs, meeting, original, project, re, edu, table, conference, charSemicolon, charRoundbracket, charSquarebracket, charHash, capitalLong, type,
     > Kept variables: charDollar, charExclamation, remove, your, capitalTotal, capitalAve, our, george, num1999, hpl,
 
-> In the third step ("prediction step") 48 redundant variables were eliminated for refining the prediction purpose and 10 variables were kept. 
+> In the third step ("prediction step") 48 redundant variables were eliminated for refining the prediction purpose and 10 variables were kept.
 
-> After performing the three steps variable selection procedure using the `VSURF` library we got 10 variables from the 57 initial total variables. 
+> After performing the three steps variable selection procedure using the `VSURF` library we got 10 variables from the 57 initial total variables.
 
 ### 5.4. Experiment with the parallel version based on the article on **VSURF**
 
@@ -2035,10 +2035,10 @@ list.nfor <- lapply(nfor.list, function(x) {
     message(paste0("\n Calculating VSURF with nfor.thres: ", x$nfor.thres,
                    ", nfor.interp.values: ", x$nfor.interp,
                    " and nfor.pred: ", x$nfor.pred, "."))
-    
-    VSURF(type ~ ., data = spam.app, 
-          nfor.thres = x$nfor.thres, 
-          nfor.interp.values = x$nfor.interp, 
+
+    VSURF(type ~ ., data = spam.app,
+          nfor.thres = x$nfor.thres,
+          nfor.interp.values = x$nfor.interp,
           nfor.pred = x$nfor.pred,
           parallel = TRUE)
     })
@@ -2047,9 +2047,9 @@ list.nfor <- lapply(nfor.list, function(x) {
 
 ```R
 # Create empty 3D matrix
-array <- array(data = NA, dim = c(5, 5, 5), 
-               dimnames = list(paste0("nfor.thres:", as.character(seq(10, 130, by = 30))), 
-                               paste0("nfor.interp:", as.character(seq(10, 130, by = 30))), 
+array <- array(data = NA, dim = c(5, 5, 5),
+               dimnames = list(paste0("nfor.thres:", as.character(seq(10, 130, by = 30))),
+                               paste0("nfor.interp:", as.character(seq(10, 130, by = 30))),
                                paste0("nfor.pred:", as.character(seq(10, 130, by = 30)))))
 
 array.numberof.varselect.thres <- array
@@ -2061,15 +2061,15 @@ array.numberof.varselect.pred <- array
 ```R
 # Fill empty 3D arrays with the number of variables kept on each step for all the combinations tested
 lapply(1:length(nfor.list), function(w) {
-    
+
     x <- which(seq(10, 130, by = 30) == nfor.list[[w]]$nfor.thres)
     y <- which(seq(10, 130, by = 30) == nfor.list[[w]]$nfor.interp)
     z <- which(seq(10, 130, by = 30) == nfor.list[[w]]$nfor.pred)
-       
+
     array.numberof.varselect.thres[x, y, z] <<- length(list.nfor[[w]]$varselect.thres)
     array.numberof.varselect.interp[x, y, z] <<- length(list.nfor[[w]]$varselect.interp)
     array.numberof.varselect.pred[x, y, z] <<- length(list.nfor[[w]]$varselect.pred)
-    
+
 })
 ```
 
@@ -2083,62 +2083,62 @@ numberof.varselect.pred <- data.frame("values" = as.numeric(array.numberof.varse
 
 
 ```R
-# Reshape the numberof.varselect data to make an histogram 
-numberof.varselect <- numberof.varselect.thres %>% 
-                        mutate(var = "varselect.thres") %>% 
-                         select(var, values) %>% 
-                            rbind(numberof.varselect.interp %>% 
-                                  mutate(var = "varselect.interp") %>% 
+# Reshape the numberof.varselect data to make an histogram
+numberof.varselect <- numberof.varselect.thres %>%
+                        mutate(var = "varselect.thres") %>%
+                         select(var, values) %>%
+                            rbind(numberof.varselect.interp %>%
+                                  mutate(var = "varselect.interp") %>%
                                   select(var, values)) %>%
-                                    rbind(numberof.varselect.pred %>% 
-                                        mutate(var = "varselect.pred") %>% 
+                                    rbind(numberof.varselect.pred %>%
+                                        mutate(var = "varselect.pred") %>%
                                           select(var, values))
 ```
 
 
 ```R
 # Create histogram
-ggplot(numberof.varselect) + 
-geom_histogram(aes(x = values, 
-                   fill = var), 
-               color = "white", binwidth = 1) + 
+ggplot(numberof.varselect) +
+geom_histogram(aes(x = values,
+                   fill = var),
+               color = "white", binwidth = 1) +
 labs(title = "Number of selected variables on each step", subtitle = "For different nfor values",
-     x = "Number of variables", y = "Frequency") + 
-scale_fill_manual(values = c(green, blue, red), name = "Step") + 
+     x = "Number of variables", y = "Frequency") +
+scale_fill_manual(values = c(green, blue, red), name = "Step") +
 facet_grid(factor(var, levels = c("varselect.thres", "varselect.interp", "varselect.pred")) ~ .)
 ```
 
 
 
 
-![png](output_185_1.png)
+![png](markdown_export/output_185_1.png)
 
 
-> The most frequent number of variables selected changing the number of grown forest (`nfor`) at each step for the first, second and third steps are 52, 22 and 10 total variables respectively. 
+> The most frequent number of variables selected changing the number of grown forest (`nfor`) at each step for the first, second and third steps are 52, 22 and 10 total variables respectively.
 
 - **Check the number of variables selected in Step 1 - Threshold**
 
 
 ```R
-matrix_nfor.thresh <- reshape2::melt(array.numberof.varselect.thres[1,,]) %>% 
-                        mutate(nfor.thres = "nfor.thres:10") %>% 
-                            rbind(reshape2::melt(array.numberof.varselect.thres[2,,]) %>% 
-                                    mutate(nfor.thres = "nfor.thres:40")) %>% 
-                                        rbind(reshape2::melt(array.numberof.varselect.thres[3,,]) %>% 
+matrix_nfor.thresh <- reshape2::melt(array.numberof.varselect.thres[1,,]) %>%
+                        mutate(nfor.thres = "nfor.thres:10") %>%
+                            rbind(reshape2::melt(array.numberof.varselect.thres[2,,]) %>%
+                                    mutate(nfor.thres = "nfor.thres:40")) %>%
+                                        rbind(reshape2::melt(array.numberof.varselect.thres[3,,]) %>%
                                                 mutate(nfor.thres = "nfor.thres:70")) %>%
-                                                    rbind(reshape2::melt(array.numberof.varselect.thres[4,,]) %>% 
-                                                         mutate(nfor.thres = "nfor.thres:100")) %>% 
-                                                            rbind(reshape2::melt(array.numberof.varselect.thres[5,,]) %>% 
+                                                    rbind(reshape2::melt(array.numberof.varselect.thres[4,,]) %>%
+                                                         mutate(nfor.thres = "nfor.thres:100")) %>%
+                                                            rbind(reshape2::melt(array.numberof.varselect.thres[5,,]) %>%
                                                                     mutate(nfor.thres = "nfor.thres:130"))
 ```
 
 
 ```R
 # Plot matrix
-ggplot(matrix_nfor.thresh) + 
-geom_raster(aes(x = Var2, y = Var1, fill = value), interpolate = TRUE) + 
-labs(x = "nfor.prediction", y = "nfor.interpretation", title = "Number of selected variables - Step 1") + 
-scale_fill_gradientn(colours = c(purple, blue, green, red)) + 
+ggplot(matrix_nfor.thresh) +
+geom_raster(aes(x = Var2, y = Var1, fill = value), interpolate = TRUE) +
+labs(x = "nfor.prediction", y = "nfor.interpretation", title = "Number of selected variables - Step 1") +
+scale_fill_gradientn(colours = c(purple, blue, green, red)) +
 facet_grid(factor(nfor.thres, levels = c("nfor.thres:130",
                                          "nfor.thres:100",
                                          "nfor.thres:70",
@@ -2149,22 +2149,22 @@ facet_grid(factor(nfor.thres, levels = c("nfor.thres:130",
 
 
 
-![png](output_189_1.png)
+![png](markdown_export/output_189_1.png)
 
 
 - **Check the number of variables selected in Step 2 - Interpretation**
 
 
 ```R
-matrix_nfor.interpret <- reshape2::melt(array.numberof.varselect.thres[,1,]) %>% 
-                        mutate(nfor.interp = "nfor.interp:10") %>% 
-                            rbind(reshape2::melt(array.numberof.varselect.thres[,2,]) %>% 
-                                    mutate(nfor.interp = "nfor.interp:40")) %>% 
-                                        rbind(reshape2::melt(array.numberof.varselect.thres[,3,]) %>% 
+matrix_nfor.interpret <- reshape2::melt(array.numberof.varselect.thres[,1,]) %>%
+                        mutate(nfor.interp = "nfor.interp:10") %>%
+                            rbind(reshape2::melt(array.numberof.varselect.thres[,2,]) %>%
+                                    mutate(nfor.interp = "nfor.interp:40")) %>%
+                                        rbind(reshape2::melt(array.numberof.varselect.thres[,3,]) %>%
                                                 mutate(nfor.interp = "nfor.interp:70")) %>%
-                                                    rbind(reshape2::melt(array.numberof.varselect.thres[,4,]) %>% 
-                                                         mutate(nfor.interp = "nfor.interp:100")) %>% 
-                                                            rbind(reshape2::melt(array.numberof.varselect.thres[,5,]) %>% 
+                                                    rbind(reshape2::melt(array.numberof.varselect.thres[,4,]) %>%
+                                                         mutate(nfor.interp = "nfor.interp:100")) %>%
+                                                            rbind(reshape2::melt(array.numberof.varselect.thres[,5,]) %>%
                                                                     mutate(nfor.interp = "nfor.interp:130"))
 ```
 
@@ -2176,10 +2176,10 @@ save.image("data.RData")
 
 ```R
 # Plot matrix
-ggplot(matrix_nfor.interpret) + 
-geom_raster(aes(x = Var2, y = Var1, fill = value), interpolate = TRUE) + 
-labs(x = "nfor.prediction", y = "nfor.thres", title = "Number of selected variables - Step 2") + 
-scale_fill_gradientn(colours = c(purple, blue, green, red)) + 
+ggplot(matrix_nfor.interpret) +
+geom_raster(aes(x = Var2, y = Var1, fill = value), interpolate = TRUE) +
+labs(x = "nfor.prediction", y = "nfor.thres", title = "Number of selected variables - Step 2") +
+scale_fill_gradientn(colours = c(purple, blue, green, red)) +
 facet_grid(factor(nfor.interp, levels = c("nfor.interp:130",
                                          "nfor.interp:100",
                                          "nfor.interp:70",
@@ -2190,32 +2190,32 @@ facet_grid(factor(nfor.interp, levels = c("nfor.interp:130",
 
 
 
-![png](output_193_1.png)
+![png](markdown_export/output_193_1.png)
 
 
 - **Check the number of variables selected in Step 3 - Prediction**
 
 
 ```R
-matrix_nfor.pred <- reshape2::melt(array.numberof.varselect.thres[,,1]) %>% 
-                        mutate(nfor.pred = "nfor.pred:10") %>% 
-                            rbind(reshape2::melt(array.numberof.varselect.thres[,,2]) %>% 
-                                    mutate(nfor.pred = "nfor.pred:40")) %>% 
-                                        rbind(reshape2::melt(array.numberof.varselect.thres[,,3]) %>% 
+matrix_nfor.pred <- reshape2::melt(array.numberof.varselect.thres[,,1]) %>%
+                        mutate(nfor.pred = "nfor.pred:10") %>%
+                            rbind(reshape2::melt(array.numberof.varselect.thres[,,2]) %>%
+                                    mutate(nfor.pred = "nfor.pred:40")) %>%
+                                        rbind(reshape2::melt(array.numberof.varselect.thres[,,3]) %>%
                                                 mutate(nfor.pred = "nfor.pred:70")) %>%
-                                                    rbind(reshape2::melt(array.numberof.varselect.thres[,,4]) %>% 
-                                                         mutate(nfor.pred = "nfor.pred:100")) %>% 
-                                                            rbind(reshape2::melt(array.numberof.varselect.thres[,,5]) %>% 
+                                                    rbind(reshape2::melt(array.numberof.varselect.thres[,,4]) %>%
+                                                         mutate(nfor.pred = "nfor.pred:100")) %>%
+                                                            rbind(reshape2::melt(array.numberof.varselect.thres[,,5]) %>%
                                                                     mutate(nfor.pred = "nfor.pred:130"))
 ```
 
 
 ```R
 # Plot matrix
-ggplot(matrix_nfor.pred) + 
-geom_raster(aes(x = Var2, y = Var1, fill = value), interpolate = TRUE) + 
-labs(x = "nfor.interp", y = "nfor.thres", title = "Number of selected variables - Step 3") + 
-scale_fill_gradientn(colours = c(purple, blue, green, red)) + 
+ggplot(matrix_nfor.pred) +
+geom_raster(aes(x = Var2, y = Var1, fill = value), interpolate = TRUE) +
+labs(x = "nfor.interp", y = "nfor.thres", title = "Number of selected variables - Step 3") +
+scale_fill_gradientn(colours = c(purple, blue, green, red)) +
 facet_grid(factor(nfor.pred, levels = c("nfor.pred:130",
                                           "nfor.pred:100",
                                           "nfor.pred:70",
@@ -2226,7 +2226,7 @@ facet_grid(factor(nfor.pred, levels = c("nfor.pred:130",
 
 
 
-![png](output_196_1.png)
+![png](markdown_export/output_196_1.png)
 
 
 
